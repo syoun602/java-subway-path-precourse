@@ -41,7 +41,7 @@ public class InitialSetting {
     }
 
     private static void insertThirdSection() {
-        for (int i = 0; i < secondLineStationCostList.length; i++) {
+        for (int i = 0; i < thirdLineStationCostList.length; i++) {
             SectionRepository.addSection(new Section(
                     StationRepository.findByName(thirdLineStationNameList.get(i)),
                     StationRepository.findByName(thirdLineStationNameList.get(i+1)),
@@ -51,7 +51,7 @@ public class InitialSetting {
     }
 
     private static void insertShinBundangSection() {
-        for (int i = 0; i < secondLineStationCostList.length; i++) {
+        for (int i = 0; i < shinBundangLineCostList.length; i++) {
             SectionRepository.addSection(new Section(
                     StationRepository.findByName(shinBundangLineStationNameList.get(i)),
                     StationRepository.findByName(shinBundangLineStationNameList.get(i+1)),
