@@ -22,11 +22,15 @@ public class MainController {
         do {
             MainScreen.print();
             input = mainScreenInput();
-        } while (processInput());
+        } while (processInput(input));
     }
 
-    private boolean processInput() {
-        return true;
+    private boolean processInput(String mainScreenInput) {
+        if (mainScreenInput.equals("1")) {
+            PathController.getInstance().run();
+            return true;
+        }
+        return !mainScreenInput.equals("Q");
     }
 
     private String mainScreenInput() {
