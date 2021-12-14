@@ -1,5 +1,6 @@
 package subway.repository;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.Section;
 
 import java.util.ArrayList;
@@ -19,6 +20,14 @@ public class SectionRepository {
 
     public static void deleteAll() {
         sections.clear();
+    }
+
+    public static Section findByNames(String edgeSrc, String edgeDest) {
+        return sections.stream()
+                .filter(section -> section.getSource().getName().equals(edgeSrc))
+                .filter(section -> section.getDestination().getName().equals(edgeDest))
+                .findAny()
+                .orElse(null);
     }
 }
 

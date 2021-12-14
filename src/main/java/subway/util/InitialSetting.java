@@ -36,7 +36,7 @@ public class InitialSetting {
                     StationRepository.findByName(secondLineStationNameList.get(i)),
                     StationRepository.findByName(secondLineStationNameList.get(i+1)),
                     secondLineStationCostList[i][0],
-                    secondLineStationCostList[i][0]));
+                    secondLineStationCostList[i][1]));
         }
     }
 
@@ -46,7 +46,7 @@ public class InitialSetting {
                     StationRepository.findByName(thirdLineStationNameList.get(i)),
                     StationRepository.findByName(thirdLineStationNameList.get(i+1)),
                     thirdLineStationCostList[i][0],
-                    thirdLineStationCostList[i][0]));
+                    thirdLineStationCostList[i][1]));
         }
     }
 
@@ -56,7 +56,7 @@ public class InitialSetting {
                     StationRepository.findByName(shinBundangLineStationNameList.get(i)),
                     StationRepository.findByName(shinBundangLineStationNameList.get(i+1)),
                     shinBundangLineCostList[i][0],
-                    shinBundangLineCostList[i][0]));
+                    shinBundangLineCostList[i][1]));
         }
     }
 
