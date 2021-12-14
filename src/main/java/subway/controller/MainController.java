@@ -36,6 +36,7 @@ public class MainController {
     private String mainScreenInput() {
         while (true) {
             try {
+                InputScreen.printSelectModeMessage();;
                 String input = InputScreen.getInput();
                 InputValidator.validateMainScreenInput(input);
                 return input;

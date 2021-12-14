@@ -1,6 +1,6 @@
 package subway.controller;
 
-import subway.service.StationService;
+import subway.service.PathService;
 import subway.util.InputValidator;
 import subway.view.InputScreen;
 import subway.view.PathScreen;
@@ -8,12 +8,12 @@ import subway.view.ResultScreen;
 
 public class PathController {
     private static PathController instance;
-    private static StationService stationService;
+    private static PathService pathService;
 
     public static PathController getInstance() {
         if (instance == null) {
             instance = new PathController();
-            stationService = new StationService();
+            pathService = new PathService();
         }
         return instance;
     }
@@ -29,6 +29,7 @@ public class PathController {
     public String stationScreenInput() {
         while (true) {
             try {
+                InputScreen.printSelectModeMessage();
                 String input = InputScreen.getInput();
                 InputValidator.validatePathScreenInput(input);
                 return input;
@@ -38,7 +39,29 @@ public class PathController {
         }
     }
 
-    private boolean processInput(String stationScreenInput) {
-        return true;
+    private boolean processInput(String pathScreenInput) {
+        try {
+            if (!pathScreenInput.equals("B")) {
+                selectMode(pathScreenInput);
+            }
+            return false;
+        } catch (IllegalArgumentException e) {
+            ResultScreen.printErrorMessage(e);
+            return true;
+        }
+    }
+
+    private void selectMode(String mode) {
+        InputScreen.printInputSource();
+        InputScreen.getInput();
+        InputScreen.printInputDestination();
+        InputScreen.getInput();
+
+        if (mode.equals("1")) {
+            pathService.createPathByDistance();
+        }
+        if (mode.equals("2")) {
+            pathService.createPathByTime();
+        }
     }
 }
