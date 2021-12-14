@@ -10,7 +10,7 @@ public class InputScreen {
     public static String getInput() {
         System.out.println(SELECT_MODE);
         String input = scanner.nextLine();
-        System.out.println(NEW_LINE);
+        System.out.println();
         return input;
     }
 }

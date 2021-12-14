@@ -6,7 +6,7 @@ public class MainScreen {
             "1. 경로 조회\n" +
             "Q. 종료";
 
-    public void print() {
+    public static void print() {
         System.out.println(MAIN_PROMPT + NEW_LINE);
     }
 }
