@@ -1,6 +1,7 @@
 package subway.controller;
 
 import subway.InitialSetting;
+import subway.util.InputValidator;
 import subway.view.InputScreen;
 import subway.view.MainScreen;
 import subway.view.ResultScreen;
@@ -32,6 +33,7 @@ public class MainController {
         while (true) {
             try {
                 String input = InputScreen.getInput();
+                InputValidator.validateMainScreenInput(input);
                 return input;
             } catch (IllegalArgumentException e) {
                 ResultScreen.printError(e);
