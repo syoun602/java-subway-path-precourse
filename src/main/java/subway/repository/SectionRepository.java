@@ -1,9 +1,10 @@
-package subway.domain;
+package subway.repository;
+
+import subway.domain.Section;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class SectionRepository {
     private static final List<Section> sections = new ArrayList<>();
@@ -17,7 +18,7 @@ public class SectionRepository {
     }
 
     public static void deleteAll() {
-        sections().clear();
+        sections.clear();
     }
 }
 

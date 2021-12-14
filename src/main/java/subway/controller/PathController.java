@@ -53,15 +53,15 @@ public class PathController {
 
     private void selectMode(String mode) {
         InputScreen.printInputSource();
-        InputScreen.getInput();
+        String src = InputScreen.getInput();
         InputScreen.printInputDestination();
-        InputScreen.getInput();
+        String dest = InputScreen.getInput();
 
         if (mode.equals("1")) {
-            pathService.createPathByDistance();
+            pathService.createPathByDistance(src, dest);
         }
         if (mode.equals("2")) {
-            pathService.createPathByTime();
+            pathService.createPathByTime(src, dest);
         }
     }
 }
