@@ -40,7 +40,7 @@ public class MainController {
                 InputValidator.validateMainScreenInput(input);
                 return input;
             } catch (IllegalArgumentException e) {
-                ResultScreen.printError(e);
+                ResultScreen.printErrorMessage(e);
             }
         }
     }
