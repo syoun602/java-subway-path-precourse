@@ -1,5 +1,6 @@
 package subway.controller;
 
+import subway.domain.Result;
 import subway.service.PathService;
 import subway.util.InputValidator;
 import subway.view.InputScreen;
@@ -58,7 +59,7 @@ public class PathController {
         String dest = InputScreen.getInput();
 
         if (mode.equals("1")) {
-            pathService.createPathByDistance(src, dest);
+            ResultScreen.printResult(pathService.createPathByDistance(src, dest));
         }
         if (mode.equals("2")) {
             pathService.createPathByTime(src, dest);
