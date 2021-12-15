@@ -7,10 +7,10 @@ public class Result {
     private int distance;
     private int timeCost;
 
-    public Result(List<String> stationNames, int distance, int timeCost) {
-        this.stationNames = stationNames;
-        this.distance = distance;
-        this.timeCost = timeCost;
+    public Result(List<String> vertexList, List<Integer> distanceAndTime) {
+        this.stationNames = vertexList;
+        this.distance = distanceAndTime.get(0);
+        this.timeCost = distanceAndTime.get(1);
     }
 
     public List<String> getStationNames() {

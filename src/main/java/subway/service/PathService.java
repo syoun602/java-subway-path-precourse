@@ -4,77 +4,60 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+
 import subway.domain.Result;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathService {
     private static final String SAME_SOURCE_DESTINATION_MESSAGE = "출발역과 도착역이 동일합니다.";
     private static final String INVALID_SOURCE_STATION_NAME_MESSAGE = "출발역이 존재하지 않습니다.";
     private static final String INVALID_DESTINATION_STATION_NAME_MESSAGE = "도착역이 존재하지 않습니다.";
+    private final WeightedMultigraph<String, DefaultWeightedEdge> distanceGraph;
+    private final WeightedMultigraph<String, DefaultWeightedEdge> timeCostGraph;
+    public PathService() {
+        distanceGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        timeCostGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        StationRepository.stations().forEach(station -> {
+            distanceGraph.addVertex(station.getName());
+            timeCostGraph.addVertex(station.getName());
+        });
+        SectionRepository.sections().forEach(section -> {
+            distanceGraph.setEdgeWeight(distanceGraph.addEdge(
+                    section.getSource().getName(), section.getDestination().getName()), section.getDistance());
+            timeCostGraph.setEdgeWeight(timeCostGraph.addEdge(
+                    section.getSource().getName(), section.getDestination().getName()), section.getTimeCost());
+        });
+    }
 
     public Result createPathByDistance(String src, String dest) {
-        validateStationNames(src, dest);
-        WeightedMultigraph<String, DefaultWeightedEdge> distanceGraph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        StationRepository.stations().forEach(station -> distanceGraph.addVertex(station.getName()));
-        SectionRepository.sections().forEach(section -> distanceGraph.setEdgeWeight(
-                distanceGraph.addEdge(section.getSource().getName(), section.getDestination().getName()),
-                section.getDistance()));
-
-        return createResultByDistance(distanceGraph, src, dest);
+        return getResult(src, dest, distanceGraph);
     }
 
     public Result createPathByTimeCost(String src, String dest) {
+        return getResult(src, dest, timeCostGraph);
+    }
+
+    private Result getResult(String src, String dest, WeightedMultigraph<String, DefaultWeightedEdge> graphType) {
         validateStationNames(src, dest);
-        WeightedMultigraph<String, DefaultWeightedEdge> timeCostGraph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        StationRepository.stations().forEach(station -> timeCostGraph.addVertex(station.getName()));
-        SectionRepository.sections().forEach(section -> timeCostGraph.setEdgeWeight(
-                timeCostGraph.addEdge(section.getSource().getName(), section.getDestination().getName()),
-                section.getTimeCost()));
-
-        return createResultByTimeCost(timeCostGraph, src, dest);
-    }
-
-    private Result createResultByDistance(WeightedMultigraph<String, DefaultWeightedEdge> distanceGraph, String src, String dest) {
-        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(distanceGraph);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graphType);
         GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(src, dest);
-        int totalTimeCost = getTotalTimeCost(path);
-        return new Result(path.getVertexList(), (int)path.getWeight(), totalTimeCost);
+        List<String> vertexList = path.getVertexList();
+        return new Result(vertexList, calculateDistanceAndTime(vertexList));
     }
 
-    private Result createResultByTimeCost(WeightedMultigraph<String, DefaultWeightedEdge> timeCostGraph, String src, String dest) {
-        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(timeCostGraph);
-        GraphPath<String, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(src, dest);
-        int totalDistance = getTotalDistance(path);
-        return new Result(path.getVertexList(), totalDistance, (int)path.getWeight());
-    }
-
-    private int getTotalTimeCost(GraphPath<String, DefaultWeightedEdge> path) {
-        int sum = 0;
-        for (DefaultWeightedEdge edge : path.getEdgeList()) {
-            List<String> list = Arrays.stream(edge.toString().split(":")).collect(Collectors.toList());
-            String edgeSrc = list.get(0).substring(1, list.get(0).length() - 1);
-            String edgeDest = list.get(1).substring(1, list.get(1).length() - 1);
-            sum += SectionRepository.findByNames(edgeSrc, edgeDest).getTimeCost();
+    private List<Integer> calculateDistanceAndTime(List<String> vertexList) {
+        List<Integer> list = Arrays.asList(0, 0);
+        for (int i = 0; i < vertexList.size() - 1; i++) {
+            DefaultWeightedEdge edgeByDistance = distanceGraph.getEdge(vertexList.get(i), vertexList.get(i + 1));
+            DefaultWeightedEdge edgeByTimeCost = timeCostGraph.getEdge(vertexList.get(i), vertexList.get(i + 1));
+            list.set(0, list.get(0) + (int) distanceGraph.getEdgeWeight(edgeByDistance));
+            list.set(1, list.get(1) + (int) timeCostGraph.getEdgeWeight(edgeByTimeCost));
         }
-        return sum;
-    }
-
-    private int getTotalDistance(GraphPath<String, DefaultWeightedEdge> path) {
-        int sum = 0;
-        for (DefaultWeightedEdge edge : path.getEdgeList()) {
-            List<String> list = Arrays.stream(edge.toString().split(":")).collect(Collectors.toList());
-            String edgeSrc = list.get(0).substring(1, list.get(0).length() - 1);
-            String edgeDest = list.get(1).substring(1, list.get(1).length() - 1);
-            sum += SectionRepository.findByNames(edgeSrc, edgeDest).getDistance();
-        }
-        return sum;
+        return list;
     }
 
     private void validateStationNames(String src, String dest) {
