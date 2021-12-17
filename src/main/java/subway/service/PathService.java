@@ -18,6 +18,7 @@ public class PathService {
     private static final String INVALID_DESTINATION_STATION_NAME_MESSAGE = "도착역이 존재하지 않습니다.";
     private final WeightedMultigraph<String, DefaultWeightedEdge> distanceGraph;
     private final WeightedMultigraph<String, DefaultWeightedEdge> timeCostGraph;
+
     public PathService() {
         distanceGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         timeCostGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);

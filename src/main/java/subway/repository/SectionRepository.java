@@ -1,6 +1,5 @@
 package subway.repository;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.domain.Section;
 
 import java.util.ArrayList;
